@@ -19,14 +19,28 @@ services:
       - "9090:9090"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+#  load-generator:
+#   image: "neotys/neoload-loadgenerator"
+#   ports:
+#     - "7100:7100"
   locust:
     image: hakobera/locust
+    ports:
+      - "8089:8089"
     volumes:
       - ./locust/locustfile.py:/test/locustfile.py
     environment:
       - TARGET_URL=http://web
       - LOCUST_MODE=standalone
       - SCENARIO_FILE=/test/locustfile.py
+  controller:
+    build: ./controller/.
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./controller/:/code
+    environment:
+      - FLASK_APP=app.py
 #  influxdb:
 #    image: "influxdb"
 #    ports:
